@@ -1,4 +1,4 @@
-//First Come First Serve Algorithm
+//First Come First Serve Algorithm by Jelina Ramos-Perez
 
 #ifndef FIRST_COME_FIRST_SERVE_H
 #define FIRST_COME_FIRST_SERVE_H
@@ -9,16 +9,19 @@
 
 void first_come_first_serve(Process_struct process_array[], int numb_process, int context_switch_penalty)
 {
-	int x;
+	int i;
 	
 	process_array[0].start_time = process_array[0].arrival_time;
 	process_array[0].finish_time = process_array[0].arrival_time + process_array[0].total_burst_time;
+	process_array[0].wait_time = 0;
+	process_array[0].turn_around_time = process_array[0].total_burst_time;
 
-	for (x = 1; x < numb_process; x++)
+	for (i = 1; i < numb_process; i++)
 	{
-		process_array[x].start_time = process_array[x-1].finish_time + context_switch_penalty;
-		process_array[x].finish_time = process_array[x].start_time + process_array[x].total_burst_time;
-		
+		process_array[i].start_time = process_array[i-1].finish_time + context_switch_penalty;
+		process_array[i].finish_time = process_array[i].start_time + process_array[i].total_burst_time;
+		process_array[i].wait_time = process_array[i].start_time - process_array[i].arrival_time;
+		process_array[i].turn_around_time = process_array[i].finish_time - process_array[i].arrival_time;
 	}
 }
 

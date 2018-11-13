@@ -11,6 +11,8 @@ typedef struct {
     int arrival_time; // Time the process arrived in the queue
     int start_time; 
     int finish_time; // Time the process finishes execution
+	int wait_time;
+	int turn_around_time;
 } Process_struct;
 
 #endif
