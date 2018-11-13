@@ -14,6 +14,7 @@ void priority(Process_struct process_array[], int numb_process, int context_swit
 	
 	
 	for(i=0; i<numb_process; i++)
+	{	
         for(j=0; j<numb_process; j++)
         {
             if(process_array[i].priority_number<process_array[j].priority_number)
@@ -32,6 +33,7 @@ void priority(Process_struct process_array[], int numb_process, int context_swit
                 process_array[j].id_number=temp3;
             }
         }
+	}
     
     process_array[0].start_time = process_array[0].arrival_time;
 	process_array[0].finish_time = process_array[0].arrival_time + process_array[0].total_burst_time;    
