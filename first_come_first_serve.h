@@ -1,4 +1,4 @@
-//First Come First Serve Algorithm by Jelina Ramos-Perez
+//First Come First Serve Algorithm
 
 #ifndef FIRST_COME_FIRST_SERVE_H
 #define FIRST_COME_FIRST_SERVE_H
