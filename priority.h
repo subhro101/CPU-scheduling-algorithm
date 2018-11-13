@@ -1,4 +1,4 @@
-//First Come First Serve Algorithm by Jelina Ramos-Perez
+//First Come First Serve Algorithm by Subhrajyoti Pradhan
 
 #ifndef PRIORITY_H
 #define PRIORITY_H
