@@ -28,7 +28,7 @@ void round_robin(Process_struct process_array[], int numb_process, int time_quan
 	//While there are more processes in the ready queue
 	while (readyq.size() > 0)
 	{
-		//pull first process in queue
+		//pop first process in queue
 		p = readyq.front();
 		readyq.pop();
 
@@ -53,18 +53,21 @@ void round_robin(Process_struct process_array[], int numb_process, int time_quan
 				break;
 			}
 		}
+		//If there is still more time needed for the process, push it to the queue
 		if(p.remaining_burst_time > 0)
 		{
 		    readyq.push(p);
 		}
+		//If process is finished, add it to the end of the output queue
 		else
 		{
 		    outputq.push(p);
 		}
 		//Set current time
 		clock_gettime(CLOCK_MONOTONIC, &current);
+		//Set time since beginning of round robin scheduling
 		epoch_milli = calculate(epoch, current);
-
+        //If there are more processes left to add
         if(i < numb_process)
         {
     		//Push arrived processes to ready queue
@@ -78,6 +81,8 @@ void round_robin(Process_struct process_array[], int numb_process, int time_quan
     		}
         }
 	}
+	
+	//Copy output to the process_array, to be printed in main
 	for(j = 0; j < outputq.size(); j++)
 	{
 	    process_array[i] = outputq.front();
