@@ -1,10 +1,6 @@
 /*  CPU Scheduling Simulator
 
-    Authors:
-    Jelina Ramos
-    Michael De Grande
-    Subhrajyoti Pradhan
-    Al Mundhar Al Hadhrami
+    
 
     Date: 10/29/2018
 */
