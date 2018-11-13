@@ -10,10 +10,18 @@
 
 void priority(Process_struct process_array[], int numb_process, int context_switch_penalty)
 {
+<<<<<<< HEAD
     int x,i,j,k,temp=0, temp2 =0, temp3 =0;
     
     
     for(i=0; i<numb_process; i++)
+=======
+	int x,i,j,k,temp=0, temp2 =0, temp3 =0;
+	
+	
+	for(i=0; i<numb_process; i++)
+	{	
+>>>>>>> 81d3ab1923e0fa15b94184447803d0fbec277e4f
         for(j=0; j<numb_process; j++)
         {
             if(process_array[i].priority_number<process_array[j].priority_number)
@@ -32,6 +40,7 @@ void priority(Process_struct process_array[], int numb_process, int context_swit
                 process_array[j].id_number=temp3;
             }
         }
+	}
     
     process_array[0].start_time = process_array[0].arrival_time;
     process_array[0].finish_time = process_array[0].arrival_time + process_array[0].total_burst_time;    
