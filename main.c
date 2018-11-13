@@ -1,6 +1,6 @@
 /*  CPU Scheduling Simulator
 
-    
+
 
     Date: 10/29/2018
 */
@@ -11,8 +11,8 @@
 #include "Process_struct.h"
 //#include "round_robin.h"
 //#include "shortest_job_first.h"
-#include "first_come_first_serve.h"
-//#include "priority.h"
+//#include "first_come_first_serve.h"
+#include "priority.h"
 
 #define max_priority 5
 #define num_processes 25
@@ -35,13 +35,13 @@ int main(int argc, char* argv[]) {
 
     srand(current_time);
     long arrival_time_accumulator = 0;
-    
+
     // Setup the processes
     Process_struct processes[num_processes];
-    
+
     for (i = 0; i < num_processes; i++)
     {
-        processes[i].id_number = i + 1; 
+        processes[i].id_number = i + 1;
         processes[i].total_burst_time = rand() % max_burst_time;
         processes[i].remaining_burst_time = processes[i].total_burst_time;
         processes[i].priority_number = rand() % max_priority;
@@ -50,48 +50,48 @@ int main(int argc, char* argv[]) {
         processes[i].start_time = -1; // Not set yet
         processes[i].finish_time = 0; // Not set yet
     }
-    
-    Process_struct fcfs_processes[num_processes];
+
+    //Process_struct fcfs_processes[num_processes];
     //Process_struct rr_processes[num_processes];
    // Process_struct sjf_processes[num_processes];
-    //Process_struct priority_processes[num_processes];
-    memcpy(fcfs_processes, processes, sizeof(processes));
+    Process_struct priority_processes[num_processes];
+    //memcpy(fcfs_processes, processes, sizeof(processes));
     //memcpy(rr_processes, processes, sizeof(processes));
     //memcpy(sjf_processes, processes, sizeof(processes));
-    //memcpy(priority_processes, processes, sizeof(processes));
-    
-  
+    memcpy(priority_processes, processes, sizeof(processes));
+
+
     printf("Processes:\n");
     for (i = 0; i < num_processes; i++)
     {
         Process_struct p = processes[i];
         printf("Process: %d\t Burst Time: %d\t Arrival Time: %d\n", p.id_number, p.total_burst_time, p.arrival_time);
     }
-    
+
     //FCFS
-    first_come_first_serve(fcfs_processes, num_processes, context_switch_time);
-    
-    printf("\nFirst Come First Serve results:\n");
-    results(fcfs_processes);
-    
-    //RR    
+    /* first_come_first_serve(fcfs_processes, num_processes, context_switch_time); */
+
+    /* printf("\nFirst Come First Serve results:\n"); */
+    /* results(fcfs_processes); */
+
+    //RR
     //round_robin(rr_processes, num_processes, time_quantum, context_switch_time);
-    
+
     //printf("Round Robin results:\n");
     //results(rr_processes);
-    
+
     //SJF
     //shortest_job_first(sjf_processes, num_processes, 0, context_switch_time);
-    
+
     //printf("Shortest Job First results:\n");
     //results(sjf_processes);
 
 	//Priority
-    //priority(priority_processes, num_processes, context_switch_time);
+    priority(priority_processes, num_processes, context_switch_time);
 
-	//printf("Priority results:\n");
-	//results(priority_processes);
-    
+	printf("Priority results:\n");
+	results(priority_processes);
+
     return 0;
 }
 
@@ -106,7 +106,7 @@ double cpu_utilization(Process_struct processes[])
         }
     }
     utilization = (double) (total_burst_time / (double) (max_finish_time - start_time));
-    
+
     return utilization;
 }
 
