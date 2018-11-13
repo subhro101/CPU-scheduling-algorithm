@@ -34,7 +34,8 @@ double cpu_utilization(Process_struct proc[]);
 void results(Process_struct proc[]);
 
 
-int main(int argc, char* argv[]) {
+int main(int argc, char* argv[]) 
+{
     int i;
     int current_time = time(NULL);
 
@@ -54,15 +55,15 @@ int main(int argc, char* argv[]) {
         processes[i].arrival_time = arrival_time_accumulator;
         processes[i].start_time = -1; // Not set yet
         processes[i].finish_time = 0; // Not set yet
-        processes[i].wait_time = 0; //Not set yet
-        processes[i].turn_around_time = 0; //Not set yet
+        processes[i].wait_time = 0; //Not set yet                           //MIKE   Added for print function
+        processes[i].turn_around_time = 0; //Not set yet                    //MIKE
     }
     
     Process_struct fcfs_processes[num_processes];
     memcpy(fcfs_processes, processes, sizeof(processes));
 
-    Process_struct rr_processes[num_processes];
-    memcpy(rr_processes, processes, sizeof(processes));
+    Process_struct rr_processes[num_processes];                             //MIKE   Just reordered these for clarity
+    memcpy(rr_processes, processes, sizeof(processes));                     //MIKE
 
     //Process_struct sjf_processes[num_processes];
     //memcpy(sjf_processes, processes, sizeof(processes));
@@ -77,7 +78,7 @@ int main(int argc, char* argv[]) {
     printf("\nFirst Come First Serve results:\n");
     results(fcfs_processes);
 
-    //Priority
+    //Priority                                                              //MIKE Reordered these for testing priority algo before rr(which segfaults sometimes)
     priority(priority_processes, num_processes, context_switch_time);
 
     printf("Priority results:\n");
@@ -104,9 +105,11 @@ double cpu_utilization(Process_struct processes[])
 {
     int start_time = processes[0].arrival_time, total_burst_time = 0, i, max_finish_time = 0;
     double utilization;
-    for (i = 0; i < num_processes; i++) {
+    for (i = 0; i < num_processes; i++) 
+    {
         total_burst_time += processes[i].total_burst_time;
-        if (processes[i].finish_time > max_finish_time) {
+        if (processes[i].finish_time > max_finish_time) 
+        {
             max_finish_time = processes[i].finish_time;
         }
     }
@@ -115,7 +118,7 @@ double cpu_utilization(Process_struct processes[])
     return utilization;
 }
 
-void results(Process_struct processes[])
+void results(Process_struct processes[])                                               //MIKE Changed to add turnaround time and wait time.
 {
     printf("Processes:\n");
     int i;
@@ -128,26 +131,32 @@ void results(Process_struct processes[])
     printf("\n");
 }
 
-int total_wait_time(Process_struct proc[]) {
+int total_wait_time(Process_struct proc[])                                             //MIKE Changed this to work with struct
+{
     int i, total = 0;
-    for (i = 0; i < num_processes; i++) {
+    for (i = 0; i < num_processes; i++) 
+    {
         total += proc[i].wait_time;
     }
     return total;
 }
 
-double average_wait_time(Process_struct proc[]) {
+double average_wait_time(Process_struct proc[]) 
+{
     return (double) (total_wait_time(proc)) / num_processes;
 }
 
-int total_turnaround_time(Process_struct proc[]) {
+int total_turnaround_time(Process_struct proc[])                                        //MIKE Changed this to work with struct
+{
     int i, total = 0;
-    for (i = 0; i < num_processes; i++) {
+    for (i = 0; i < num_processes; i++) 
+    {
         total += proc[i].turn_around_time;
     }
     return total;
 }
 
-double average_turnaround_time(Process_struct proc[]) {
+double average_turnaround_time(Process_struct proc[]) 
+{
     return (double) (total_turnaround_time(proc)) / num_processes;
 }
