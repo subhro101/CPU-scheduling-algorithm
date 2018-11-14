@@ -1,90 +1,55 @@
-//al mundhar Al Hadhrami
-//shortest job first.h
-#include<stdio.h>
+//Shortest Job First Algorithm
+//Al Mundhar Al Hadhrami
 
-//shortest job first
-void main()
-{
+#ifndef SHORTEST_JOB_FIRST_H
+#define SHORTEST_JOB_FIRST_H
+
+#include <stdio.h>
+#include <limits.h>
+#include "Process_struct.h"
+
+Process_struct *find_shortest_job(Process_struct *process_array, int num_processes, int current_time);
+
+void sjf(Process_struct *process_array, int num_processes, int is_premptive, int context_switch_penalty) {
     
-    int burst[20];
-    int process[20];
-    int waitingtime[20];
-    int TurnAroundTime[20];
-    int holdingvariable;
-    int AnotherHoldingVarible;
-    int xx;
-    int all=0;
-    int var;
-    int saved;
-    float averageWaitingTime,averageTotal;
-    //displaying the number of the process needed
-    printf("please place  the number of processes ");
-    scanf("%d",&xx);
-    //choosing whats the burst  time for each process
-    printf("\n what is the number of burst time for each process :\n");
+    int time_unit = 0, num_not_finished = num_processes;
+    Process_struct* current_process = process_array;
     
-    for(holdingvariable=0;holdingvariable<xx;holdingvariable++)
-    {
-        //displaying next varibale
-        printf("p%d:",holdingvariable+1);
-        scanf("%d",&burst[holdingvariable]);
-        //it has the process number
-        process[holdingvariable]= holdingvariable+1;
-    }
-    
-    
-    //for loop for slection sort of the whole burst time
-    for(holdingvariable=0;holdingvariable<xx;holdingvariable++)
-    {
-        //variable to hold
-        var=holdingvariable;
+    //While loop iterates until all processes have been completed
+    while(num_not_finished > 0) {
+        //Find shortest available job
+        current_process = find_shortest_job(process_array, num_processes, time_unit);
         
-        //for loop for the burst time
-        for(AnotherHoldingVarible=holdingvariable+1;AnotherHoldingVarible<xx;AnotherHoldingVarible++)
-        {
-            if(burst[AnotherHoldingVarible]<burst[var])
-            var=AnotherHoldingVarible;
+        //If no job is available, tick clock and try again
+        if(current_process != NULL) {
+            current_process->start_time = time_unit;
+            current_process->remaining_burst_time = 0;
+            time_unit += current_process->total_burst_time;
+            current_process->finish_time = time_unit;
+            time_unit += context_switch_penalty;
+            num_not_finished--;
         }
-        
-        saved=burst[holdingvariable];
-        burst[holdingvariable]=burst[var];
-        burst[var]=saved;
-        
-        saved=process[holdingvariable];
-        process[holdingvariable]=process[var];
-        process[var]=saved;
+        else
+            time_unit++;
     }
-    
-    //setting the wait time for the first process to be zero
-    waitingtime[0]=0;
-    
-    
-    //for loop
-    // calculating the waitTime
-    for(holdingvariable=1;holdingvariable<xx;holdingvariable++)
-    {
-        waitingtime[holdingvariable]=0;
-        for(AnotherHoldingVarible=0;AnotherHoldingVarible<holdingvariable;AnotherHoldingVarible++)
-        waitingtime[holdingvariable]+=burst[AnotherHoldingVarible];
-        
-        all+=waitingtime[holdingvariable];
-    }
-    //getting the average wait time
-    averageWaitingTime=(float)all/xx;
-    all=0;
-    printf("\n------------------------\n");
-    
-    printf("\nProcess\t    Burst Time    \tWaiting Time\tTurnaround Time");
-    for(holdingvariable=0;holdingvariable<xx;holdingvariable++)
-    {
-        TurnAroundTime[holdingvariable]=burst[holdingvariable]+waitingtime[holdingvariable];     //calculate turnaround time
-        all+=TurnAroundTime[holdingvariable];
-        printf("\np%d\t\t  %d\t\t    %d\t\t\t%d",process[holdingvariable],burst[holdingvariable],waitingtime[holdingvariable],TurnAroundTime[holdingvariable]);
-    }
-    
-    averageTotal=(float)all/xx;     //average turnaround time
-           printf("\n------------------------\n");
-    printf("\n\n The Average Waiting Time is equal to =%f",averageWaitingTime);
-    printf("\n---> \n" );
-    printf("\n The Average Turnaround Time is equal to =%f\n",averageTotal);
 }
+
+//Returns the process with the shortest burst time remaining.
+Process_struct *find_shortest_job(Process_struct *process_array, int num_processes, int current_time) {
+    int min = INT_MAX;
+    Process_struct *current_process;
+    Process_struct *shortest_job = NULL;
+    
+    for(current_process = process_array; current_process < process_array + num_processes; current_process++) {
+        if(current_process->total_burst_time < min && current_process->remaining_burst_time != 0 && current_time >= current_process->arrival_time) {
+            min = current_process->remaining_burst_time;
+            shortest_job = current_process;
+        }
+    }
+    
+    return shortest_job;
+}
+#endif
+
+
+

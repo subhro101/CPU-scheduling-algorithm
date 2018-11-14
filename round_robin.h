@@ -9,92 +9,82 @@
 #include <time.h>
 #include "Process_struct.h"
 using namespace std;
-int calculate(timespec first, timespec second);
-void round_robin(Process_struct process_array[], int numb_process, int time_quantum, int context_switch_penalty)
+
+void round_robin(Process_struct *process_array, int numb_process, int time_quantum, int context_switch_penalty)
 {
-	int i = 0, j = 0, elapsed_milli, epoch_milli;
-	long time_elapsed = 0;
+	int i = 0, j = 0, current = 0;
+
 	Process_struct p;
-	struct timespec start,current, epoch, elapsed;
 	queue <Process_struct> outputq;
 	queue <Process_struct> readyq;
 	   
 	p = process_array[0];
-	p.start_time = p.arrival_time;
-
+    p.start_time = 0;
 	readyq.push(p);
     i++;
-    clock_gettime(CLOCK_MONOTONIC, &epoch);
-	//While there are more processes in the ready queue
-	while (readyq.size() > 0)
-	{
-		//pop first process in queue
-		p = readyq.front();
-		readyq.pop();
 
-		elapsed_milli = 0;
-		clock_gettime(CLOCK_MONOTONIC, &start);
-		//Run while elapsed time < quantum time
-		while(elapsed_milli < time_quantum)
+	//While there are more processes in the ready queue
+	while (readyq.size() > 0 || i < numb_process)
+	{
+	    current++;
+		//pop first process in queue
+		//p = Process_struct();
+		p = readyq.front();
+		if(p.arrival_time > current)
 		{
-			//Calculate current and elapsed time
-			clock_gettime(CLOCK_MONOTONIC, &current);
-			elapsed_milli = calculate(start, current);
-			//If there is more remaining burst time than elapsed time subtract that from remaining burst time
-			if(p.remaining_burst_time > elapsed_milli)
-			{
-				p.remaining_burst_time -= elapsed_milli;
-			} 
-			else
-			{
-				p.remaining_burst_time = 0;
-				p.finish_time = calculate(epoch, current);
-				p.turn_around_time = p.finish_time - p.arrival_time;
-				break;
-			}
+		    current = p.arrival_time;  
 		}
-		//If there is still more time needed for the process, push it to the queue
-		if(p.remaining_burst_time > 0)
-		{
-		    readyq.push(p);
-		}
-		//If process is finished, add it to the end of the output queue
 		else
 		{
-		    outputq.push(p);
-		}
-		//Set current time
-		clock_gettime(CLOCK_MONOTONIC, &current);
-		//Set time since beginning of round robin scheduling
-		epoch_milli = calculate(epoch, current);
-        //If there are more processes left to add
-        if(i < numb_process)
-        {
+		    p.start_time = current;
+		    
+		    //If this is first time run, set wait time
+		    if(p.total_burst_time == p.remaining_burst_time)
+		    {
+		        printf("Current time: %d\nProcess: %d started\nArrival time: %d\nTotal Burst Time: %d\nRemaining: %d\n\n", current, p.id_number, p.arrival_time, p.total_burst_time, p.remaining_burst_time);
+		        p.wait_time = p.start_time - p.arrival_time;
+		    }
+            else
+            {
+               printf("Current time: %d\nProcess: %d running\nArrival time: %d\nTotal Burst Time: %d\nRemaining: %d\n\n", current, p.id_number, p.arrival_time, p.total_burst_time, p.remaining_burst_time);
+            }
+    		readyq.pop();
+            
+            //Run while elapsed time < quantum time
+    		if(p.remaining_burst_time > time_quantum)
+    		{
+    		    p.remaining_burst_time -= time_quantum;
+    		    current += time_quantum;
+    		    readyq.push(p);
+    		    printf("Current time: %d\nProcess: %d stopped\n Remaining time: %d\n\n", current, p.id_number, p.remaining_burst_time);
+    		}
+    		//If process is finished, add it to the end of the output queue
+    		else
+    		{
+    		    current += p.remaining_burst_time;
+    		    p.remaining_burst_time = 0;
+    		    p.finish_time = current;
+    		    outputq.push(p);
+    		    printf("Current time: %d\nProcess %d completed\n\n", current, p.id_number);
+    		}
+
     		//Push arrived processes to ready queue
-    		while(process_array[i].arrival_time <= epoch_milli)
+    		while((i < numb_process) && (process_array[i].arrival_time <= current))
     		{
     			p = process_array[i];
     			readyq.push(p);
     			i++;
-    			clock_gettime(CLOCK_MONOTONIC, &current);
-    			epoch_milli = calculate(epoch, current);
+    			current = p.arrival_time;
     		}
-        }
+
+	    }
 	}
-	
-	//Copy output to the process_array, to be printed in main
+    //Copy output to the process_array, to be printed in main
 	for(j = 0; j < outputq.size(); j++)
 	{
 	    process_array[i] = outputq.front();
 	    outputq.pop();
 	}
-}
-
-int calculate(timespec first, timespec second)
-{
-    int first_milli = (first.tv_sec * 1000000000 + first.tv_nsec) /1000000;
-    int second_milli = (second.tv_sec * 1000000000 + second.tv_nsec) /1000000;
-   return second_milli - first_milli; 
 }
 
 #endif
