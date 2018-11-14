@@ -48,7 +48,7 @@ void round_robin(Process_struct process_array[], int numb_process, int time_quan
                //printf("Current time: %d\nProcess: %d running\nArrival time: %d\nTotal Burst Time: %d\nRemaining: %d\n\n", current, p.id_number, p.arrival_time, p.total_burst_time, p.remaining_burst_time);
             }
     		readyq.pop();
-                		//Run while elapsed time < quantum time
+            //Run while elapsed time < quantum time
     		if(p.remaining_burst_time > time_quantum)
     		{
     		    p.remaining_burst_time -= time_quantum;
@@ -60,6 +60,7 @@ void round_robin(Process_struct process_array[], int numb_process, int time_quan
     		else
     		{
     		    current += p.remaining_burst_time;
+    		    p.turn_around_time = current-p.start_time;
     		    p.remaining_burst_time = 0;
     		    p.finish_time = current;
     		    outputq.push(p);
@@ -74,8 +75,7 @@ void round_robin(Process_struct process_array[], int numb_process, int time_quan
     			i++;
     			current = p.arrival_time;
     		}
-
-	    }
+		}
 	}
     //Copy output to the process_array, to be printed in main
 	for(i = 0; i < numb_process; i++)
@@ -84,6 +84,4 @@ void round_robin(Process_struct process_array[], int numb_process, int time_quan
 	    outputq.pop();
 	}
 }
-
-
 #endif

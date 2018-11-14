@@ -10,9 +10,7 @@
 
 void priority(Process_struct process_array[], int numb_process, int context_switch_penalty)
 {
-
-    int x,i,j,k,temp=0, temp2=0, temp3=0;
-        
+    int x,i,j,k,temp=0, temp2 =0, temp3 =0;
     for(i=0; i<numb_process; i++)
     {   
         for(j=0; j<numb_process; j++)
@@ -36,13 +34,16 @@ void priority(Process_struct process_array[], int numb_process, int context_swit
     }
     
     process_array[0].start_time = process_array[0].arrival_time;
-    process_array[0].finish_time = process_array[0].arrival_time + process_array[0].total_burst_time;   
-
+    process_array[0].wait_time = process_array[0].start_time - process_array[0].arrival_time;
+    process_array[0].finish_time = process_array[0].arrival_time + process_array[0].total_burst_time;
+    process_array[0].turn_around_time = process_array[0].finish_time - process_array[0].start_time;
+    
     for(x = 1; x < numb_process; x++)
     {
             process_array[x].start_time = process_array[x-1].finish_time + context_switch_penalty;
-            process_array[x].finish_time = process_array[x].start_time + process_array[x].total_burst_time;;
+            process_array[x].wait_time = process_array[x].start_time - process_array[x].arrival_time;
+            process_array[x].finish_time = process_array[x].start_time + process_array[x].total_burst_time;
+            process_array[x].turn_around_time = process_array[x].finish_time - process_array[x].start_time;
     }    
 }   
-    
 #endif
