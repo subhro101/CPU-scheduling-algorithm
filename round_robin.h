@@ -10,9 +10,9 @@
 #include "Process_struct.h"
 using namespace std;
 
-void round_robin(Process_struct *process_array, int numb_process, int time_quantum, int context_switch_penalty)
+void round_robin(Process_struct process_array[], int numb_process, int time_quantum, int context_switch_penalty)
 {
-	int i = 0, j = 0, current = 0;
+	int i = 0, current = 0;
 
 	Process_struct p;
 	queue <Process_struct> outputq;
@@ -37,26 +37,24 @@ void round_robin(Process_struct *process_array, int numb_process, int time_quant
 		else
 		{
 		    p.start_time = current;
-		    
 		    //If this is first time run, set wait time
 		    if(p.total_burst_time == p.remaining_burst_time)
 		    {
-		        printf("Current time: %d\nProcess: %d started\nArrival time: %d\nTotal Burst Time: %d\nRemaining: %d\n\n", current, p.id_number, p.arrival_time, p.total_burst_time, p.remaining_burst_time);
+		        //printf("Current time: %d\nProcess: %d started\nArrival time: %d\nTotal Burst Time: %d\nRemaining: %d\n\n", current, p.id_number, p.arrival_time, p.total_burst_time, p.remaining_burst_time);
 		        p.wait_time = p.start_time - p.arrival_time;
 		    }
             else
             {
-               printf("Current time: %d\nProcess: %d running\nArrival time: %d\nTotal Burst Time: %d\nRemaining: %d\n\n", current, p.id_number, p.arrival_time, p.total_burst_time, p.remaining_burst_time);
+               //printf("Current time: %d\nProcess: %d running\nArrival time: %d\nTotal Burst Time: %d\nRemaining: %d\n\n", current, p.id_number, p.arrival_time, p.total_burst_time, p.remaining_burst_time);
             }
     		readyq.pop();
-            
-            //Run while elapsed time < quantum time
+                		//Run while elapsed time < quantum time
     		if(p.remaining_burst_time > time_quantum)
     		{
     		    p.remaining_burst_time -= time_quantum;
     		    current += time_quantum;
     		    readyq.push(p);
-    		    printf("Current time: %d\nProcess: %d stopped\n Remaining time: %d\n\n", current, p.id_number, p.remaining_burst_time);
+    		    //printf("Current time: %d\nProcess: %d stopped\n Remaining time: %d\n\n", current, p.id_number, p.remaining_burst_time);
     		}
     		//If process is finished, add it to the end of the output queue
     		else
@@ -65,7 +63,7 @@ void round_robin(Process_struct *process_array, int numb_process, int time_quant
     		    p.remaining_burst_time = 0;
     		    p.finish_time = current;
     		    outputq.push(p);
-    		    printf("Current time: %d\nProcess %d completed\n\n", current, p.id_number);
+    		    //printf("Current time: %d\nProcess %d completed\n\n", current, p.id_number);
     		}
 
     		//Push arrived processes to ready queue
@@ -80,11 +78,12 @@ void round_robin(Process_struct *process_array, int numb_process, int time_quant
 	    }
 	}
     //Copy output to the process_array, to be printed in main
-	for(j = 0; j < outputq.size(); j++)
+	for(i = 0; i < numb_process; i++)
 	{
 	    process_array[i] = outputq.front();
 	    outputq.pop();
 	}
 }
+
 
 #endif

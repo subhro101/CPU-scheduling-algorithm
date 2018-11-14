@@ -10,7 +10,7 @@
 
 Process_struct *find_shortest_job(Process_struct *process_array, int num_processes, int current_time);
 
-void sjf(Process_struct *process_array, int num_processes, int is_premptive, int context_switch_penalty) {
+void shortest_job_first(Process_struct process_array[], int num_processes, int is_premptive, int context_switch_penalty) {
     
     int time_unit = 0, num_not_finished = num_processes;
     Process_struct* current_process = process_array;
@@ -35,13 +35,16 @@ void sjf(Process_struct *process_array, int num_processes, int is_premptive, int
 }
 
 //Returns the process with the shortest burst time remaining.
-Process_struct *find_shortest_job(Process_struct *process_array, int num_processes, int current_time) {
+Process_struct *find_shortest_job(Process_struct *process_array, int num_processes, int current_time)
+{
     int min = INT_MAX;
     Process_struct *current_process;
     Process_struct *shortest_job = NULL;
     
-    for(current_process = process_array; current_process < process_array + num_processes; current_process++) {
-        if(current_process->total_burst_time < min && current_process->remaining_burst_time != 0 && current_time >= current_process->arrival_time) {
+    for(current_process = process_array; current_process < process_array + num_processes; current_process++) 
+    {
+        if(current_process->total_burst_time < min && current_process->remaining_burst_time != 0 && current_time >= current_process->arrival_time)
+        {
             min = current_process->remaining_burst_time;
             shortest_job = current_process;
         }

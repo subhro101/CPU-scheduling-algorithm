@@ -15,7 +15,7 @@
 #include <queue>
 #include "Process_struct.h"
 #include "round_robin.h"
-//#include "shortest_job_first.h"
+#include "shortest_job_first.h"
 #include "first_come_first_serve.h"
 #include "priority.h"
 
@@ -55,48 +55,42 @@ int main(int argc, char* argv[])
         processes[i].arrival_time = arrival_time_accumulator;
         processes[i].start_time = -1; // Not set yet
         processes[i].finish_time = 0; // Not set yet
-        processes[i].wait_time = 0; //Not set yet                           //MIKE   Added for print function
-        processes[i].turn_around_time = 0; //Not set yet                    //MIKE
+        processes[i].wait_time = 0; //Not set yet                           
+        processes[i].turn_around_time = 0; //Not set yet                    
     }
     
     Process_struct fcfs_processes[num_processes];
     memcpy(fcfs_processes, processes, sizeof(processes));
 
-    Process_struct rr_processes[num_processes];                             //MIKE   Just reordered these for clarity
-    memcpy(rr_processes, processes, sizeof(processes));                     //MIKE
+    Process_struct rr_processes[num_processes];                             
+    memcpy(rr_processes, processes, sizeof(processes));                     
 
-    //Process_struct sjf_processes[num_processes];
-    //memcpy(sjf_processes, processes, sizeof(processes));
+    Process_struct sjf_processes[num_processes];
+    memcpy(sjf_processes, processes, sizeof(processes));
 
     Process_struct priority_processes[num_processes];
     memcpy(priority_processes, processes, sizeof(processes));
     
-      
+    
     //FCFS
     first_come_first_serve(fcfs_processes, num_processes, context_switch_time);
-    
-    printf("\nFirst Come First Serve results:\n");
+    printf("First Come First Serve results:\n");
     results(fcfs_processes);
-
-    //Priority                                                              //MIKE Reordered these for testing priority algo before rr(which segfaults sometimes)
-    priority(priority_processes, num_processes, context_switch_time);
-
-    printf("Priority results:\n");
-    results(priority_processes);
     
     //RR    
     round_robin(rr_processes, num_processes, time_quantum, context_switch_time);
-    
-    printf("Round Robin results:\n");
+    printf("\nRound Robin results:\n");
     results(rr_processes);
-
-
-    //SJF
-    //shortest_job_first(sjf_processes, num_processes, 0, context_switch_time);
     
-    //printf("Shortest Job First results:\n");
-    //results(sjf_processes);
-
+    //Priority                                                              
+    priority(priority_processes, num_processes, context_switch_time);
+    printf("\nPriority results:\n");
+    results(priority_processes);
+    
+    //SJF
+    shortest_job_first(sjf_processes, num_processes, 0, context_switch_time);
+    printf("Shortest Job First results:\n");
+    results(sjf_processes);
 
     return 0;
 }
@@ -118,20 +112,20 @@ double cpu_utilization(Process_struct processes[])
     return utilization;
 }
 
-void results(Process_struct processes[])                                               //MIKE Changed to add turnaround time and wait time.
+void results(Process_struct procs[])                                               
 {
     printf("Processes:\n");
     int i;
     for (i = 0; i < num_processes; i++)
     {
-        Process_struct p = processes[i];
+        Process_struct p = procs[i];
         printf("Process: %d  \t Burst Time: %d  \t Arrival Time: %d  \t  Wait Time: %d\n", p.id_number, p.total_burst_time, p.arrival_time, p.wait_time);
     }
-    printf("\nTotal wait time: %d\nAverage wait time: %.2f\nTotal turnaround time: %d\nAverage turnaround time: %.2f\nCPU Utilization: %.2f\n\n", total_wait_time(processes), average_wait_time(processes), total_turnaround_time(processes), average_turnaround_time(processes), cpu_utilization(processes));
+    printf("\nTotal wait time: %d\nAverage wait time: %.2f\nTotal turnaround time: %d\nAverage turnaround time: %.2f\nCPU Utilization: %.2f\n\n", total_wait_time(procs), average_wait_time(procs), total_turnaround_time(procs), average_turnaround_time(procs), cpu_utilization(procs));
     printf("\n");
 }
 
-int total_wait_time(Process_struct proc[])                                             //MIKE Changed this to work with struct
+int total_wait_time(Process_struct proc[])                                             
 {
     int i, total = 0;
     for (i = 0; i < num_processes; i++) 
@@ -146,7 +140,7 @@ double average_wait_time(Process_struct proc[])
     return (double) (total_wait_time(proc)) / num_processes;
 }
 
-int total_turnaround_time(Process_struct proc[])                                        //MIKE Changed this to work with struct
+int total_turnaround_time(Process_struct proc[])                                        
 {
     int i, total = 0;
     for (i = 0; i < num_processes; i++) 
