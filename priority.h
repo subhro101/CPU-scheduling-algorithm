@@ -46,4 +46,6 @@ void priority(Process_struct process_array[], int numb_process, int context_swit
             process_array[x].turn_around_time = process_array[x].finish_time - process_array[x].start_time;
     }    
 }   
+    
+
 #endif

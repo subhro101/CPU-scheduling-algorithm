@@ -74,23 +74,23 @@ int main(int argc, char* argv[])
     
     //FCFS
     first_come_first_serve(fcfs_processes, num_processes, context_switch_time);
-    printf("First Come First Serve results:\n");
+    printf("\n First Come First Serve results:\n");
     results(fcfs_processes);
     
     //RR    
     round_robin(rr_processes, num_processes, time_quantum, context_switch_time);
-    printf("\nRound Robin results:\n");
+    printf("\n Round Robin results:\n");
     results(rr_processes);
-    
-    //Priority                                                              
-    priority(priority_processes, num_processes, context_switch_time);
-    printf("\nPriority results:\n");
-    results(priority_processes);
     
     //SJF
     shortest_job_first(sjf_processes, num_processes, 0, context_switch_time);
-    printf("Shortest Job First results:\n");
+    printf(" Shortest Job First results:\n");
     results(sjf_processes);
+
+    //Priority                                                              
+    priority(priority_processes, num_processes, context_switch_time);
+    printf("\n Priority results:\n");
+    results(priority_processes);
 
     return 0;
 }
@@ -114,14 +114,14 @@ double cpu_utilization(Process_struct processes[])
 
 void results(Process_struct procs[])                                               
 {
-    printf("Processes:\n");
+    printf(" Processes:\n");
     int i;
     for (i = 0; i < num_processes; i++)
     {
         Process_struct p = procs[i];
-        printf("Process: %d  \t Burst Time: %d  \t Arrival Time: %d  \t  Wait Time: %d\n", p.id_number, p.total_burst_time, p.arrival_time, p.wait_time);
+        printf(" Process: %d \tBurst: %d \tArrival: %d \tWait: %d \tTurned: %d \n", p.id_number, p.total_burst_time, p.arrival_time, p.wait_time, p.turn_around_time);
     }
-    printf("\nTotal wait time: %d\nAverage wait time: %.2f\nTotal turnaround time: %d\nAverage turnaround time: %.2f\nCPU Utilization: %.2f\n\n", total_wait_time(procs), average_wait_time(procs), total_turnaround_time(procs), average_turnaround_time(procs), cpu_utilization(procs));
+    printf("\n Total wait: %d\n Average wait: %.2f\n Total turnaround: %d\n Average turnaround: %.2f\n CPU Utilization: %.2f\n\n", total_wait_time(procs), average_wait_time(procs), total_turnaround_time(procs), average_turnaround_time(procs), cpu_utilization(procs));
     printf("\n");
 }
 
